@@ -1,46 +1,50 @@
 close all;
 s = tf('s');
 
-
-G = 1;
 R = 1;
 R2 = 1;
 R3 = 1;
 C = 1;
+R4 = 1;
+R5 = 1;
 
-H1 = (G/(R*C*s))^2
-H2 = G/(R*C*s)
-H3 = 1 + (R2/R3)*H2 + H1
+G = R5/R4;
+K = G/(R*C);
 
-figure('Name', 'Plots', 'Position',  [50 50 1400 900]);
+H3 = s^2/(s^2 - R2*K*s/R3 - K)
+H2 = (K/s) * H3
+H1 = (K/s) * H2
 
-subplot(3,3,1);
+figure;
+
+subplot(3,1,1);
 pzplot(H1);
 legend('H1');
 
-subplot(3,3,2)
+subplot(3,1,2)
 pzplot(H2);
 legend('H2');
 
-subplot(3,3,3)
+subplot(3,1,3)
 pzplot(H3);
 legend('H3');
 
-subplot(3,3,4)
+figure;
+subplot(3,1,1)
 impulse(H1);
 legend('H1');
 xlabel('Time [s]'); 
 ylabel('Amplitude');
 grid on
 
-subplot(3,3,5)
+subplot(3,1,2)
 impulse(H2);
 legend('H2');
 xlabel('Time [s]'); 
 ylabel('Amplitude');
 grid on
 
-subplot(3,3,6)
+subplot(3,1,3)
 impulse(H3);
 legend('H3');
 xlabel('Time [s]'); 
@@ -48,18 +52,18 @@ ylabel('Amplitude');
 grid on
 
 
-
-subplot(3,3,7)
+figure;
+subplot(1,3,1)
 bode(H1);
 legend('H1');
 grid on
 
-subplot(3,3,8)
+subplot(1,3,2)
 bode(H2);
 legend('H2');
 grid on
 
-subplot(3,3,9)
+subplot(1,3,3)
 bode(H3);
 legend('H3');
 grid on
