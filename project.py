@@ -116,6 +116,7 @@ def define_H(R2, R3, K):
 
 
 f_rp = 300
+omega_rp = 2*np.pi*f_rp
 A_rp = np.sqrt(10)
 
 # Define component values
@@ -127,9 +128,10 @@ R5 = 1
 
 # Define constants
 G = R5 / R4
+
 #K = G / (R * C)
-K = 1/(2*np.pi*f_rp) #K between 0.000438687 and 0.000608645
-R2 = R3/(K * 2 * np.pi * f_rp) * np.sqrt(A_rp**-2 - (1 - K**2 * 4*np.pi**2 * f_rp**2)**2)
+K = 1/omega_rp #K between 0.000438687 and 0.000608645
+R2 = R3/(K * omega_rp) * np.sqrt(1/A_rp**2 - (1 - K**2 * omega_rp**2)**2)
 
 H1, H2, H3 = define_H(R2, R3, K)
 
