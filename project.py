@@ -4,7 +4,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm      
 from matplotlib.widgets import Slider
-from scipy.signal import TransferFunction, bode, impulse, tf2zpk
+from scipy.signal import TransferFunction, bode, impulse, tf2zpk, lsim, square
 
 # Function to plot pole-zero map
 def plot_pzmap(tf, title):
@@ -142,6 +142,13 @@ def redraw():
     plot_all_impulse(H1, H2, H3)
     plot_all_bode(H1, H2, H3)
 
-
-redraw()
+def rect():
+    t = np.linspace(0,0.03,10000)
+    y = square(t*2*np.pi*100)
+    plt.plot(t, y, 'r', alpha=0.5, linewidth=1, label='input')
+    tout, yout, xout = lsim(H1, T=t, U=y)
+    plt.plot(tout, yout, 'k', linewidth=1.5, label='output')
+    plt.legend()
+#redraw()
+rect()
 plt.show()
