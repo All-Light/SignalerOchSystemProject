@@ -123,14 +123,12 @@ A_rp = np.sqrt(10)
 R = 1
 R3 = 1
 C = 1
-R4 = 3000
-R5 = 1
+R4 = 1
+R5 = 2000
 
 # Define constants
 G = R5 / R4
-
-#K = G / (R * C)
-K = omega_rp #K between 0.000438687 and 0.000608645
+K = G / (R * C) #K between 1643 and 2280
 R2 = R3/(1/K * omega_rp) * np.sqrt(1/A_rp**2 - (1 - 1/K**2 * omega_rp**2)**2)
 
 H1, H2, H3 = define_H(R2, R3, K)
