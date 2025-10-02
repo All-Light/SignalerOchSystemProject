@@ -82,7 +82,7 @@ def plot_all_bode(H1,H2,H3):
     fig = plt.figure(figsize=(15, 5))
 
     w1, mag1, phase1 = bode(H1)
-    #w1 /= 2*np.pi # Hz
+    w1 /= 2*np.pi # Hz
     plot_bode(w1,mag1,phase1, 'H1', 1)
 
     w2, mag2, phase2 = bode(H2)
@@ -133,21 +133,15 @@ R2 = R3/(1/K * omega_rp) * np.sqrt(1/A_rp**2 - (1 - 1/K**2 * omega_rp**2)**2)
 
 H1, H2, H3 = define_H(R2, R3, K)
 
-
-
-pzmap_fig = plot_all_pzmap(H1, H2, H3)
-all_impulse_fig = plot_all_impulse(H1, H2, H3)
-all_bode_fig = plot_all_bode(H1, H2, H3)
-
-plt.figure(figsize=(15, 5))
 # make a figure containing the different changable variables
 # when we update a variable clear old figures and update the plots
 
-def update(val):
+def redraw():
     H1, H2, H3 = define_H(R2, R3, K)
     plot_all_pzmap(H1, H2, H3)
     plot_all_impulse(H1, H2, H3)
     plot_all_bode(H1, H2, H3)
 
 
+redraw()
 plt.show()
