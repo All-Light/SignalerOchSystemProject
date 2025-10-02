@@ -82,7 +82,7 @@ def plot_all_bode(H1,H2,H3):
     fig = plt.figure(figsize=(15, 5))
 
     w1, mag1, phase1 = bode(H1)
-    w1 /= 2*np.pi # Hz
+    #w1 /= 2*np.pi # Hz
     plot_bode(w1,mag1,phase1, 'H1', 1)
 
     w2, mag2, phase2 = bode(H2)
@@ -129,7 +129,6 @@ R5 = 1
 G = R5 / R4
 #K = G / (R * C)
 K = 1/(2*np.pi*f_rp) #K between 0.000438687 and 0.000608645
-print(A_rp**-2 - (1 - K**2 * 4*np.pi**2 * f_rp**2)**2)
 R2 = R3/(K * 2 * np.pi * f_rp) * np.sqrt(A_rp**-2 - (1 - K**2 * 4*np.pi**2 * f_rp**2)**2)
 
 H1, H2, H3 = define_H(R2, R3, K)
