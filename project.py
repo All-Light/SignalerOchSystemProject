@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')  # or 'Qt5Agg' or 'Agg' if you don't need GUI
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from scipy.signal import TransferFunction, bode, impulse, tf2zpk
 
@@ -46,6 +46,30 @@ def plot_pzmap(tf, title):
     plt.grid(True)
     plt.legend()
 
+def plot_impulse(t, y, title):
+    plt.plot(t, y)
+    plt.title(title)
+    plt.xlabel('Time [s]')
+    plt.ylabel('Amplitude')
+    plt.grid(True)
+
+def plot_bode(w, magnitude, phase, title, index):
+    plt.subplot(2, 3, index)
+
+    plt.semilogx(w, magnitude)
+    plt.title(f"{title} - Magnitude")
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("Magnitude [dB]")
+    plt.grid(True)
+
+    plt.subplot(2, 3, index+3)
+
+    plt.semilogx(w,phase)
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("Phase [°]")
+    plt.title(f"{title} - Phase")
+    plt.grid(True)
+
 # --- Plot Pole-Zero Maps ---
 plt.figure(figsize=(10, 8))
 
@@ -68,49 +92,29 @@ t3, y3 = impulse(H3)
 plt.figure(figsize=(10, 8))
 
 plt.subplot(3, 1, 1)
-plt.plot(t1, y1)
-plt.title('Impulse Response - H1')
-plt.xlabel('Time [s]')
-plt.ylabel('Amplitude')
-plt.grid(True)
+plot_impulse(t1,y1, "Impulse Response - H1")
 
 plt.subplot(3, 1, 2)
-plt.plot(t2, y2)
-plt.title('Impulse Response - H2')
-plt.xlabel('Time [s]')
-plt.ylabel('Amplitude')
-plt.grid(True)
+plot_impulse(t2,y2, "Impulse Response - H2")
 
 plt.subplot(3, 1, 3)
-plt.plot(t3, y3)
-plt.title('Impulse Response - H3')
-plt.xlabel('Time [s]')
-plt.ylabel('Amplitude')
-plt.grid(True)
-
+plot_impulse(t3, y3, "Impulse Response - H3")
 plt.tight_layout()
 
 # --- Bode Plots ---
 plt.figure(figsize=(15, 5))
 
 w1, mag1, phase1 = bode(H1)
+w1 /= 2*np.pi # Hz
+plot_bode(w1,mag1,phase1, 'H1', 1)
+
 w2, mag2, phase2 = bode(H2)
+w2 /= 2*np.pi # Hz 
+plot_bode(w2,mag2,phase2,'H2', 2)
+
 w3, mag3, phase3 = bode(H3)
-
-plt.subplot(1, 3, 1)
-plt.semilogx(w1, mag1)
-plt.title('Bode Magnitude - H1')
-plt.grid(True)
-
-plt.subplot(1, 3, 2)
-plt.semilogx(w2, mag2)
-plt.title('Bode Magnitude - H2')
-plt.grid(True)
-
-plt.subplot(1, 3, 3)
-plt.semilogx(w3, mag3)
-plt.title('Bode Magnitude - H3')
-plt.grid(True)
+w3 /= 2*np.pi # Hz
+plot_bode(w3,mag3,phase3, 'H3', 3)
 
 plt.tight_layout()
 plt.show()
