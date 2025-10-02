@@ -4,22 +4,27 @@ matplotlib.use('TkAgg')  # or 'Qt5Agg' or 'Agg' if you don't need GUI
 import matplotlib.pyplot as plt
 from scipy.signal import TransferFunction, bode, impulse, tf2zpk
 
+f_rp = 300
+A_rp = np.sqrt(10)
+
 # Define component values
 R = 1
-R2 = 1
 R3 = 1
 C = 1
-R4 = 1
+R4 = 3000
 R5 = 1
 
 # Define constants
 G = R5 / R4
-K = G / (R * C)
+#K = G / (R * C)
+K = 1/(2*np.pi*f_rp)
+print(A_rp**-2 - (1 - K**2 * 4*np.pi**2 * f_rp**2)**2)
+R2 = R3/(K * 2 * np.pi * f_rp) * np.sqrt(A_rp**-2 - (1 - K**2 * 4*np.pi**2 * f_rp**2)**2)
 
 # Define transfer functions using scipy.signal.TransferFunction (numerator, denominator)
 # H3(s) = s^2 / (s^2 + R2*K*s/R3 + K)
 num_H3 = [1, 0, 0]  # s^2
-den_H3 = [1, R2*K/R3, K]
+den_H3 = [1, R2*K/R3, K**2]
 H3 = TransferFunction(num_H3, den_H3)
 
 # H2(s) = (K/s) * H3(s)
