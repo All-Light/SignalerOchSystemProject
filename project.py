@@ -20,17 +20,14 @@ def plot_pzmap(tf, title):
     plt.legend()
 
 def plot_all_pzmap(H1, H2, H3):
-    fig = plt.figure(figsize=(10, 8))
-
-    plt.subplot(3, 1, 1)
+    fig, axs = plt.subplots(3, 1, figsize=(15, 10))
+    plt.sca(axs[0])
     plot_pzmap(H1, 'H1 Pole-Zero Map')
-
-    plt.subplot(3, 1, 2)
+    plt.sca(axs[1])
     plot_pzmap(H2, 'H2 Pole-Zero Map')
-
-    plt.subplot(3, 1, 3)
+    plt.sca(axs[2])
     plot_pzmap(H3, 'H3 Pole-Zero Map')
-
+    
     plt.tight_layout()
     return fig
 
@@ -47,7 +44,7 @@ def plot_all_impulse(H1, H2, H3):
     t2, y2 = impulse(H2)
     t3, y3 = impulse(H3)
 
-    fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(15, 10))
 
     plt.subplot(3, 1, 1)
     plot_impulse(t1,y1, "Impulse Response - H1")
@@ -65,6 +62,18 @@ def plot_bode(w, magnitude, phase, title, index):
     plt.subplot(2, 3, index)
 
     plt.semilogx(w, magnitude)
+    if index == 1: # 300 Hz point plot for LP
+        closest_f_index = np.argmin(np.abs(w - 300))
+        plt.plot(w[closest_f_index], magnitude[closest_f_index], ls="", marker="o", color="red")
+        plt.annotate(
+            f"{magnitude[closest_f_index]:.2f} dB at {np.round(w[closest_f_index])} Hz",                         
+            xy=(w[closest_f_index], magnitude[closest_f_index]),             
+            xytext=(50, -10),                                                
+            textcoords="offset points",
+            arrowprops=dict(arrowstyle="->", color="gray", lw=1.2),
+            fontsize=9,
+            color="black"
+        )
     plt.title(f"{title} - Magnitude")
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("Magnitude [dB]")
@@ -78,23 +87,30 @@ def plot_bode(w, magnitude, phase, title, index):
     plt.title(f"{title} - Phase")
     plt.grid(True)
 
-def plot_all_bode(H1,H2,H3):
-    fig = plt.figure(figsize=(15, 5))
 
-    w1, mag1, phase1 = bode(H1)
+def plot_all_bode(H1,H2,H3):
+    fig = plt.figure(figsize=(15, 10))
+    frequencies_hz = np.concatenate([
+        np.logspace(0, 6, 1000),  
+        [300]                      # ensure 300 hz
+    ])
+    frequencies_hz = np.unique(np.sort(frequencies_hz))  
+    w = 2 * np.pi * frequencies_hz
+    
+    w1, mag1, phase1 = bode(H1, w=w)
     w1 /= 2*np.pi # Hz
+    
     plot_bode(w1,mag1,phase1, 'H1', 1)
 
-    w2, mag2, phase2 = bode(H2)
+    w2, mag2, phase2 = bode(H2,  w=w)
     w2 /= 2*np.pi # Hz 
     plot_bode(w2,mag2,phase2,'H2', 2)
 
-    w3, mag3, phase3 = bode(H3)
+    w3, mag3, phase3 = bode(H3, w=w)
     w3 /= 2*np.pi # Hz
     plot_bode(w3,mag3,phase3, 'H3', 3)
 
     plt.tight_layout()
-    return fig
 
 
 def define_H(R2, R3, K):
@@ -149,6 +165,6 @@ def rect():
     tout, yout, xout = lsim(H1, T=t, U=y)
     plt.plot(tout, yout, 'k', linewidth=1.5, label='output')
     plt.legend()
-#redraw()
-rect()
+redraw()
+#rect()
 plt.show()
